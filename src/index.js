@@ -8,14 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
 function toyTaleToggle() {
     const addBtn = document.querySelector("#new-toy-btn");
     const toyFormContainer = document.querySelector(".container");
-    addBtn.addEventListener("click", () => {
+    addBtn.addEventListener("click", (event) => {
         // hide & seek with the form
         addToy = !addToy;
         if (addToy) {
             toyFormContainer.style.display = "block";
-            document.querySelector(".add-toy-form input[type=submit]")
-                .addEventListener("click", function(event) {
-                    addNewToyFetch();
+
+            document.querySelector(".add-toy-form")
+                .addEventListener("submit", function(event) {
+                    addNewToyFetch(event);
                     event.preventDefault();
                 });
 
@@ -25,12 +26,11 @@ function toyTaleToggle() {
     });
 }
 
-function addNewToyFetch() {
-
-    const toyCardCollection = document.getElementById("toy-collection")
+function addNewToyFetch(event) {
+    const toyCardCollection = document.getElementById("toy-collection");
     const dataForm = {
-        name: document.querySelector(".add-toy-form input[name=name]").value,
-        image: document.querySelector(".add-toy-form input[name=image]").value,
+        name: event.target.parentElement.querySelector("input[name=name]").value,
+        image: event.target.parentElement.querySelector("input[name=image]").value,
         likes: "0"
     };
     const cofigObj = {
@@ -44,7 +44,6 @@ function addNewToyFetch() {
     fetch("http://localhost:3000/toys", cofigObj)
         .then((resp) => resp.json())
         .then((newToy) => toyCardCollection.appendChild(makeAcard(newToy)));
-
 }
 
 function makeCardsForToys() {
@@ -86,7 +85,6 @@ function makeAcard(toy) {
 }
 
 function addLikes(event) {
-
     let pLikes = event.target.parentElement.querySelector("p");
     let likes = parseInt(pLikes.textContent.split(" ")[0]) + 1;
 
